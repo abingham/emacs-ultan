@@ -46,15 +46,16 @@
 (require 's)
 (require 'ultan)
 
+(defun company-ultan--grab-prefix ()
+  "Look for a valid prefix preceding point."
+  (when (looking-back "\\([[:graph:]]+\\)" nil 't)
+    (match-string 1)))
+
 (defun company-ultan--prefix ()
   "Find prefix for completion."
   (and
    (not (company-in-string-or-comment))
-
-   ;; TODO: This is wrong. We probably just want to look back to the last
-   ;; whitespace or something.
-   (or (company-grab-symbol-cons "\\.\\|->\\|::\\|/" 2)
-       'stop)))
+   (company-ultan--grab-prefix)))
 
 (defun company-ultan--candidates (prefix)
   "Find ultan candidates that start with `prefix'."
