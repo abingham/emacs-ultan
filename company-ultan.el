@@ -77,7 +77,8 @@
   (cl-case command
     (interactive     (company-begin-backend 'company-ultan))
     (prefix          (company-ultan--prefix))
-    (candidates      (company-ultan--candidates arg))))
+    (candidates      (company-ultan--candidates arg))
+    (annotation " [inferred]")))
 
 ;;;###autoload
 (defun company-ultan-setup ()
