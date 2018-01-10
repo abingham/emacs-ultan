@@ -57,6 +57,13 @@
    (not (company-in-string-or-comment))
    (company-ultan--grab-prefix)))
 
+(defun company-ultan--filter-candidate (prefix candidate-vec)
+  "Given a vector of candidates, return a list of those that
+start with `prefix'."
+  (let* ((prefixed (seq-filter (-partial 's-starts-with? prefix )
+                               candidate-vec)))
+    (append prefixed nil)))
+
 (defun company-ultan--candidates (prefix)
   "Find ultan candidates that start with `prefix'."
   (cons :async
@@ -65,11 +72,11 @@
             (ultan-get-names prefix)
             (deferred:nextc it
               (lambda (rsp)
-                (let* ((candidate-vec (request-response-data rsp))
-                       (prefixed (seq-filter (-partial 's-starts-with? prefix )
-                                             candidate-vec))
-                       (candidate-list (append prefixed nil)))
-                  (funcall cb candidate-list))))))))
+                (funcall
+                 cb
+                 (company-ultan--filter-candidate
+                  prefix
+                  (request-response-data rsp)))))))))
 
 (defun company-ultan (command &optional arg &rest ignored)
   "The company-backend command handler for ultan."
